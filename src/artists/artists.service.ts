@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
+
 import { DBService } from 'src/db-mock';
 import { Artist } from 'src/interfaces';
 import { CreateArtistDto } from './dto/create-artist.dto';
@@ -14,15 +16,37 @@ export class ArtistsService {
     return DBService.artists.find((artist) => artist.id === id);
   }
 
-  create(createArtistDto: CreateArtistDto) {
-    return `create new artist: ${JSON.stringify(createArtistDto)}`;
+  create(createArtistDto: CreateArtistDto): Artist {
+    const idx = DBService.artists.push({
+      ...createArtistDto,
+      id: uuidv4(),
+    });
+
+    return DBService.artists[idx - 1];
   }
 
   update(id: string, updateArtistDto: UpdateArtistDto) {
-    return `update artist ${id}: ${JSON.stringify(updateArtistDto)}`;
+    const artistToUpdate = DBService.artists.find((artist) => artist.id == id);
+    const artistIdx = DBService.artists.indexOf(artistToUpdate);
+
+    DBService.artists[artistIdx] = {
+      ...artistToUpdate,
+      ...updateArtistDto,
+    };
+
+    return DBService.artists[artistIdx];
   }
 
   remove(id: string) {
-    return `remove artist ${id}`;
+    const artistToDelete = DBService.artists.find((album) => album.id == id);
+    const artistIdx = DBService.artists.indexOf(artistToDelete);
+
+    DBService.tracks.forEach((track, idx, arr) => {
+      if (track.artistId === id) {
+        arr[idx].artistId = null;
+      }
+    });
+
+    return DBService.artists.splice(artistIdx, 1)[0];
   }
 }

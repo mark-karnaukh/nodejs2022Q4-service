@@ -39,8 +39,8 @@ export class AlbumsService {
   }
 
   remove(id: string): Album {
-    const deletedAlbum = DBService.albums.find((album) => album.id == id);
-    const deletedAlbumIdx = DBService.albums.indexOf(deletedAlbum);
+    const albumToDelete = DBService.albums.find((album) => album.id == id);
+    const albumIdx = DBService.albums.indexOf(albumToDelete);
 
     DBService.tracks.forEach((track, idx, arr) => {
       if (track.albumId === id) {
@@ -48,6 +48,6 @@ export class AlbumsService {
       }
     });
 
-    return DBService.albums.splice(deletedAlbumIdx, 1)[0];
+    return DBService.albums.splice(albumIdx, 1)[0];
   }
 }
