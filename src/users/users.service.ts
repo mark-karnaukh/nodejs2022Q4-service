@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { User } from './interfaces/user.interface';
 
 @Injectable()
 export class UsersService {
+  // Will be replaced with a real DB later...
+  private readonly users: User[] = [];
+
   findAll() {
     return 'find all users';
   }

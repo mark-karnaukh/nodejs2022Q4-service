@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateExampleDto } from 'src/example/dto/update-example.dto';
 import { CreateTrackDto } from './dto/create-track.dto';
+import { Track } from './interfaces/track.interface';
 
 @Injectable()
 export class TracksService {
+  // Will be replaced with a real DB later...
+  private readonly tracks: Track[] = [];
+
   findAll() {
     return 'find all tracks';
   }
