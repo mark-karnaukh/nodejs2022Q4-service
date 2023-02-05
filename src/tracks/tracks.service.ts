@@ -26,10 +26,21 @@ export class TracksService {
   }
 
   update(id: string, updateTrackDto: UpdateExampleDto) {
-    return `update track ${id}: ${JSON.stringify(updateTrackDto)}`;
+    const trackToUpdate = DBService.tracks.find((artist) => artist.id == id);
+    const trackIdx = DBService.tracks.indexOf(trackToUpdate);
+
+    DBService.tracks[trackIdx] = {
+      ...trackToUpdate,
+      ...updateTrackDto,
+    };
+
+    return DBService.tracks[trackIdx];
   }
 
   remove(id: string) {
-    return `remove track ${id}`;
+    const trackToDelete = DBService.tracks.find((album) => album.id == id);
+    const trackIdx = DBService.tracks.indexOf(trackToDelete);
+
+    return DBService.tracks.splice(trackIdx, 1)[0];
   }
 }

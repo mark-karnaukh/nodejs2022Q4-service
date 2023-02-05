@@ -4,6 +4,7 @@ import {
   IsInt,
   IsUUID,
   IsOptional,
+  IsDefined,
 } from 'class-validator';
 
 export class CreateAlbumDto {
@@ -12,6 +13,7 @@ export class CreateAlbumDto {
   name: string;
 
   @IsInt()
+  @IsDefined()
   year: number;
 
   @IsUUID()
