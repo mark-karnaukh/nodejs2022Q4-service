@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { CreateArtistDto } from './dto/create-artist.dto';
+import { UpdateArtistDto } from './dto/update-artist.dto';
 
 @Injectable()
 export class ArtistsService {
@@ -10,11 +12,11 @@ export class ArtistsService {
     return `find one artist by id ${id}`;
   }
 
-  create(createArtistDto: unknown) {
+  create(createArtistDto: CreateArtistDto) {
     return `create new artist: ${JSON.stringify(createArtistDto)}`;
   }
 
-  update(id: string, updateArtistDto: unknown) {
+  update(id: string, updateArtistDto: UpdateArtistDto) {
     return `update artist ${id}: ${JSON.stringify(updateArtistDto)}`;
   }
 

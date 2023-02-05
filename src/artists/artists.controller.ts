@@ -8,6 +8,8 @@ import {
   Put,
 } from '@nestjs/common';
 import { ArtistsService } from './artists.service';
+import { CreateArtistDto } from './dto/create-artist.dto';
+import { UpdateArtistDto } from './dto/update-artist.dto';
 
 @Controller('artist')
 export class ArtistsController {
@@ -24,12 +26,12 @@ export class ArtistsController {
   }
 
   @Post()
-  create(@Body() createArtistDto: unknown) {
+  create(@Body() createArtistDto: CreateArtistDto) {
     return this.artistsService.create(createArtistDto);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateArtistDto: unknown) {
+  update(@Param('id') id: string, @Body() updateArtistDto: UpdateArtistDto) {
     return this.artistsService.update(id, updateArtistDto);
   }
 

@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { UpdateExampleDto } from 'src/example/dto/update-example.dto';
+import { CreateTrackDto } from './dto/create-track.dto';
 
 @Injectable()
 export class TracksService {
@@ -10,11 +12,11 @@ export class TracksService {
     return `find one track by id ${id}`;
   }
 
-  create(createTrackDto: unknown) {
+  create(createTrackDto: CreateTrackDto) {
     return `create new track: ${JSON.stringify(createTrackDto)}`;
   }
 
-  update(id: string, updateTrackDto: unknown) {
+  update(id: string, updateTrackDto: UpdateExampleDto) {
     return `update track ${id}: ${JSON.stringify(updateTrackDto)}`;
   }
 
