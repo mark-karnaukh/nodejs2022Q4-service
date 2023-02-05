@@ -20,7 +20,9 @@ export class FavsController {
 
   @Post('/track/:id')
   addTrack(@Param('id') id: string) {
-    return this.favsService.addTrack(id);
+    return `${this.tracksService.findOne(id)} \n ${this.favsService.addTrack(
+      id,
+    )}`;
   }
 
   @Delete('/track/:id')
@@ -30,7 +32,9 @@ export class FavsController {
 
   @Post('/album/:id')
   addAlbum(@Param('id') id: string) {
-    return this.favsService.addAlbum(id);
+    return `${this.albumsService.findOne(id)} \n ${this.favsService.addAlbum(
+      id,
+    )}`;
   }
 
   @Delete('/album/:id')
@@ -40,7 +44,9 @@ export class FavsController {
 
   @Post('/artist/:id')
   addArtist(@Param('id') id: string) {
-    return this.favsService.addArtist(id);
+    return `${this.artistsService.findOne(id)} \n ${this.favsService.addArtist(
+      id,
+    )}`;
   }
 
   @Delete('/artist/:id')
