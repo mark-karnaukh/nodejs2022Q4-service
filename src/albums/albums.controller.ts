@@ -3,7 +3,10 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  NotFoundException,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -21,8 +24,14 @@ export class AlbumsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.albumsService.findOne(id);
+  findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    const album = this.albumsService.findOne(id);
+
+    if (!album) {
+      throw new NotFoundException();
+    }
+
+    return album;
   }
 
   @Post()
@@ -31,12 +40,28 @@ export class AlbumsController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateAlbumDto: UpdateAlbumDto) {
+  update(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Body() updateAlbumDto: UpdateAlbumDto,
+  ) {
+    const album = this.albumsService.findOne(id);
+
+    if (!album) {
+      throw new NotFoundException();
+    }
+
     return this.albumsService.update(id, updateAlbumDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  @HttpCode(204)
+  remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    const album = this.albumsService.findOne(id);
+
+    if (!album) {
+      throw new NotFoundException();
+    }
+
     return this.albumsService.remove(id);
   }
 }
