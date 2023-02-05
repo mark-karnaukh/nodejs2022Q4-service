@@ -30,7 +30,7 @@ export class AlbumsController {
 
   @Put(':id')
   update(@Param('id') id: string, @Body() updateAlbumDto: unknown) {
-    return `create album ${id}: ${JSON.stringify(updateAlbumDto)}`;
+    return `update album ${id}: ${JSON.stringify(updateAlbumDto)}`;
   }
 
   @Delete(':id')
