@@ -4,7 +4,7 @@ import { Favorites } from 'src/interfaces/favs.interface';
 import { Track } from 'src/interfaces/track.interface';
 import { User } from 'src/interfaces/user.interface';
 
-// Will be replaced with a real DB later...
+// TODO: Should be replaced with a real DB later...
 export interface DBState {
   albums: Album[];
   artists: Artist[];

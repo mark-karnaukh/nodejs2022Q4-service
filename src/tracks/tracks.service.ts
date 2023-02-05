@@ -25,7 +25,7 @@ export class TracksService {
     return DBService.tracks[idx - 1];
   }
 
-  update(id: string, updateTrackDto: UpdateExampleDto) {
+  update(id: string, updateTrackDto: UpdateExampleDto): Track {
     const trackToUpdate = DBService.tracks.find((artist) => artist.id == id);
     const trackIdx = DBService.tracks.indexOf(trackToUpdate);
 
@@ -37,7 +37,7 @@ export class TracksService {
     return DBService.tracks[trackIdx];
   }
 
-  remove(id: string) {
+  remove(id: string): Track {
     const trackToDelete = DBService.tracks.find((album) => album.id == id);
     const trackIdx = DBService.tracks.indexOf(trackToDelete);
 

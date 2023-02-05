@@ -2,8 +2,12 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
+  HttpCode,
+  NotFoundException,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -21,25 +25,53 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    const user = this.usersService.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    return user;
   }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+    // TODO: Use interceptor and  class-transformer library to exclude this field from the response object
+    return { ...this.usersService.create(createUserDto), password: undefined };
   }
 
   @Put(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
-    return this.usersService.update(id, updatePasswordDto);
+    const user = this.usersService.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    if (!(user.password === updatePasswordDto.oldPassword)) {
+      throw new ForbiddenException();
+    }
+
+    // TODO: Use interceptor and class-transformer library to exclude this field from the response object
+    return {
+      ...this.usersService.update(id, updatePasswordDto),
+      password: undefined,
+    };
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  @HttpCode(204)
+  remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    const user = this.usersService.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
     return this.usersService.remove(id);
   }
 }
