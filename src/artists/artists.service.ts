@@ -1,19 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { DBService } from 'src/db-mock';
+import { Artist } from 'src/interfaces';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { Artist } from './interfaces/artist.interface';
 
 @Injectable()
 export class ArtistsService {
-  // Will be replaced with a real DB later...
-  private readonly artists: Artist[] = [];
-
-  findAll() {
-    return 'find all artists';
+  findAll(): Artist[] {
+    return DBService.artists;
   }
 
-  findOne(id: string) {
-    return `find one artist by id ${id}`;
+  findOne(id: string): Artist {
+    return DBService.artists.find((artist) => artist.id === id);
   }
 
   create(createArtistDto: CreateArtistDto) {

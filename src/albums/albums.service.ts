@@ -1,19 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { DBService } from 'src/db-mock';
+import { Album } from 'src/interfaces';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { Album } from './interfaces/album.interface';
 
 @Injectable()
 export class AlbumsService {
-  // Will be replaced with a real DB later...
-  private readonly albums: Album[] = [];
-
-  findAll() {
-    return 'find all albums';
+  findAll(): Album[] {
+    return DBService.albums;
   }
 
-  findOne(id: string) {
-    return `find one album by id ${id}`;
+  findOne(id: string): Album {
+    return DBService.albums.find((album) => album.id === id);
   }
 
   create(createAlbumDto: CreateAlbumDto) {

@@ -1,17 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Favorites } from './interfaces/favs.interface';
+import { DBService } from 'src/db-mock';
+import { Favorites } from 'src/interfaces';
 
 @Injectable()
 export class FavsService {
-  // Will be replaced with a real DB later...
-  private readonly favorites: Favorites = {
-    artists: [],
-    albums: [],
-    tracks: [],
-  };
-
-  getAll() {
-    return 'get all favorites';
+  getAll(): Favorites {
+    return DBService.favs;
   }
 
   addTrack(id: string) {

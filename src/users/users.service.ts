@@ -1,19 +1,20 @@
 import { Injectable } from '@nestjs/common';
+import { DBService } from 'src/db-mock';
+import { User } from 'src/interfaces';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { User } from './interfaces/user.interface';
 
 @Injectable()
 export class UsersService {
-  // Will be replaced with a real DB later...
-  private readonly users: User[] = [];
-
-  findAll() {
-    return 'find all users';
+  findAll(): User[] {
+    return DBService.users;
   }
 
-  findOne(id: string) {
-    return `find one user by id ${id}`;
+  findOne(id: string): User {
+    return {
+      ...DBService.users.find((user) => user.id === id),
+      password: undefined,
+    };
   }
 
   create(createUserDto: CreateUserDto) {
