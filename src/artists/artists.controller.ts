@@ -24,13 +24,13 @@ export class ArtistsController {
   }
 
   @Post()
-  create(@Body() createAlbumDto: unknown) {
-    return `create new artist: ${JSON.stringify(createAlbumDto)}`;
+  create(@Body() createArtistDto: unknown) {
+    return `create new artist: ${JSON.stringify(createArtistDto)}`;
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateAlbumDto: unknown) {
-    return `update artist ${id}: ${JSON.stringify(updateAlbumDto)}`;
+  update(@Param('id') id: string, @Body() updateArtistDto: unknown) {
+    return `update artist ${id}: ${JSON.stringify(updateArtistDto)}`;
   }
 
   @Delete(':id')
