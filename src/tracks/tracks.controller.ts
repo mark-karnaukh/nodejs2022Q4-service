@@ -15,26 +15,26 @@ export class TracksController {
 
   @Get()
   findAll() {
-    return 'find all tracks';
+    return this.tracksService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return `find one track by id ${id}`;
+    return this.tracksService.findOne(id);
   }
 
   @Post()
   create(@Body() createTrackDto: unknown) {
-    return `create new track: ${JSON.stringify(createTrackDto)}`;
+    return this.tracksService.create(createTrackDto);
   }
 
   @Put(':id')
   update(@Param('id') id: string, @Body() updateTrackDto: unknown) {
-    return `update track ${id}: ${JSON.stringify(updateTrackDto)}`;
+    return this.tracksService.update(id, updateTrackDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return `remove track ${id}`;
+    return this.tracksService.remove(id);
   }
 }

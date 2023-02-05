@@ -15,26 +15,26 @@ export class AlbumsController {
 
   @Get()
   findAll() {
-    return 'find all albums';
+    return this.albumsService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return `find one album by id ${id}`;
+    return this.albumsService.findOne(id);
   }
 
   @Post()
   create(@Body() createAlbumDto: unknown) {
-    return `create new album: ${JSON.stringify(createAlbumDto)}`;
+    return this.albumsService.create(createAlbumDto);
   }
 
   @Put(':id')
   update(@Param('id') id: string, @Body() updateAlbumDto: unknown) {
-    return `update album ${id}: ${JSON.stringify(updateAlbumDto)}`;
+    return this.albumsService.update(id, updateAlbumDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return `remove album ${id}`;
+    return this.albumsService.remove(id);
   }
 }

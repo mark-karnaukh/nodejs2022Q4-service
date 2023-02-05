@@ -15,26 +15,26 @@ export class ArtistsController {
 
   @Get()
   findAll() {
-    return 'find all artists';
+    return this.artistsService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return `find one artist by id ${id}`;
+    return this.artistsService.findOne(id);
   }
 
   @Post()
   create(@Body() createArtistDto: unknown) {
-    return `create new artist: ${JSON.stringify(createArtistDto)}`;
+    return this.artistsService.create(createArtistDto);
   }
 
   @Put(':id')
   update(@Param('id') id: string, @Body() updateArtistDto: unknown) {
-    return `update artist ${id}: ${JSON.stringify(updateArtistDto)}`;
+    return this.artistsService.update(id, updateArtistDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return `remove artist ${id}`;
+    return this.artistsService.remove(id);
   }
 }

@@ -15,36 +15,36 @@ export class FavsController {
 
   @Get()
   getAll() {
-    return 'get all favorites';
+    return this.favsService.getAll();
   }
 
   @Post('/track/:id')
   addTrack(@Param('id') id: string) {
-    return `add track ${id} to the favorites`;
+    return this.favsService.addTrack(id);
   }
 
   @Delete('/track/:id')
   removeTrack(@Param('id') id: string) {
-    return `remove track ${id} from favorite`;
+    return this.favsService.removeTrack(id);
   }
 
   @Post('/album/:id')
   addAlbum(@Param('id') id: string) {
-    return `add album ${id} to the favorites`;
+    return this.favsService.addAlbum(id);
   }
 
   @Delete('/album/:id')
   removeAlbum(@Param('id') id: string) {
-    return `remove album ${id} from favorite`;
+    return this.favsService.removeAlbum(id);
   }
 
   @Post('/artist/:id')
   addArtist(@Param('id') id: string) {
-    return `add artist ${id} to the favorites`;
+    return this.favsService.addArtist(id);
   }
 
   @Delete('/artist/:id')
   removeArtist(@Param('id') id: string) {
-    return `remove artist ${id} from favorite`;
+    return this.favsService.removeArtist(id);
   }
 }
