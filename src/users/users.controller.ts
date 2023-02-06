@@ -21,7 +21,10 @@ export class UsersController {
 
   @Get()
   findAll() {
-    return this.usersService.findAll();
+    // TODO: Use interceptor and class-transformer library to exclude this field from the response object
+    return this.usersService
+      .findAll()
+      .map((user) => ({ ...user, password: undefined }));
   }
 
   @Get(':id')
@@ -32,7 +35,8 @@ export class UsersController {
       throw new NotFoundException();
     }
 
-    return user;
+    // TODO: Use interceptor and  class-transformer library to exclude this field from the response object
+    return { ...user, password: undefined };
   }
 
   @Post()
@@ -72,6 +76,7 @@ export class UsersController {
       throw new NotFoundException();
     }
 
-    return this.usersService.remove(id);
+    // TODO: Use interceptor and class-transformer library to exclude this field from the response object
+    return { ...this.usersService.remove(id), password: undefined };
   }
 }
