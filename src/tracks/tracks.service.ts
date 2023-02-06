@@ -3,8 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { DBService } from 'src/db-mock';
 import { Track } from 'src/interfaces';
-import { UpdateExampleDto } from 'src/example/dto/update-example.dto';
 import { CreateTrackDto } from './dto/create-track.dto';
+import { UpdateTrackDto } from './dto/update-track.dto';
 
 @Injectable()
 export class TracksService {
@@ -25,7 +25,7 @@ export class TracksService {
     return DBService.tracks[idx - 1];
   }
 
-  update(id: string, updateTrackDto: UpdateExampleDto): Track {
+  update(id: string, updateTrackDto: UpdateTrackDto): Track {
     const trackToUpdate = DBService.tracks.find((artist) => artist.id == id);
     const trackIdx = DBService.tracks.indexOf(trackToUpdate);
 
