@@ -8,13 +8,13 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/mark-karnaukh/nodejs2022Q4-service.git
 ```
 
 ## Installing NPM modules
 
 ```
-npm install
+npm install --legacy-peer-deps
 ```
 
 ## Running application
