@@ -1,52 +1,60 @@
 import { Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
-import { DBService } from 'src/db-mock';
 import { Artist } from 'src/interfaces';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
+import { ArtistEntity } from 'src/entities/artist.entity';
+import { TrackEntity } from 'src/entities/track.entity';
 
 @Injectable()
 export class ArtistsService {
-  findAll(): Artist[] {
-    return DBService.artists;
+  constructor(
+    @InjectRepository(ArtistEntity)
+    private readonly artistRepository: Repository<ArtistEntity>,
+    @InjectRepository(TrackEntity)
+    private readonly trackRepository: Repository<TrackEntity>,
+  ) {}
+
+  findAll(): Promise<ArtistEntity[]> {
+    return this.artistRepository.find();
   }
 
-  findOne(id: string): Artist {
-    return DBService.artists.find((artist) => artist.id === id);
+  findOne(id: string): Promise<Artist> {
+    return this.artistRepository.findOneBy({ id });
   }
 
-  create(createArtistDto: CreateArtistDto): Artist {
-    const idx = DBService.artists.push({
+  async create(createArtistDto: CreateArtistDto): Promise<ArtistEntity> {
+    const newArtist = this.artistRepository.create({
       ...createArtistDto,
-      id: uuidv4(),
     });
 
-    return DBService.artists[idx - 1];
+    return await this.artistRepository.save(newArtist);
   }
 
-  update(id: string, updateArtistDto: UpdateArtistDto): Artist {
-    const artistToUpdate = DBService.artists.find((artist) => artist.id == id);
-    const artistIdx = DBService.artists.indexOf(artistToUpdate);
+  async update(id: string, updateArtistDto: UpdateArtistDto): Promise<Artist> {
+    const artistToUpdate = await this.artistRepository.findOneBy({ id });
 
-    DBService.artists[artistIdx] = {
+    return await this.artistRepository.save({
       ...artistToUpdate,
       ...updateArtistDto,
-    };
-
-    return DBService.artists[artistIdx];
+    });
   }
 
-  remove(id: string): Artist {
-    const artistToDelete = DBService.artists.find((album) => album.id == id);
-    const artistIdx = DBService.artists.indexOf(artistToDelete);
+  async remove(id: string): Promise<ArtistEntity> {
+    const artistToDelete = await this.artistRepository.findOneBy({ id });
 
-    DBService.tracks.forEach((track, idx, arr) => {
-      if (track.artistId === id) {
-        arr[idx].artistId = null;
-      }
+    const relatedTracks = await this.trackRepository.find({
+      where: {
+        artistId: id,
+      },
     });
 
-    return DBService.artists.splice(artistIdx, 1)[0];
+    await this.trackRepository.save(
+      relatedTracks.map((track) => ({ ...track, artistId: null })),
+    );
+
+    return this.artistRepository.remove(artistToDelete);
   }
 }
