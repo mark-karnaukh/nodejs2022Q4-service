@@ -14,7 +14,7 @@ git clone https://github.com/mark-karnaukh/nodejs2022Q4-service.git
 ## Installing NPM modules
 
 ```
-npm install --legacy-peer-deps
+npm install
 ```
 
 ## Running application
