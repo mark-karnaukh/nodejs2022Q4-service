@@ -22,11 +22,11 @@ export class TracksService {
   }
 
   async create(createTrackDto: CreateTrackDto): Promise<TrackEntity> {
-    const newArtist = this.trackRepository.create({
+    const newTrack = this.trackRepository.create({
       ...createTrackDto,
     });
 
-    return await this.trackRepository.save(newArtist);
+    return await this.trackRepository.save(newTrack);
   }
 
   async update(

@@ -7,6 +7,7 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { ArtistEntity } from 'src/entities/artist.entity';
 import { TrackEntity } from 'src/entities/track.entity';
+import { AlbumEntity } from 'src/entities/album.entiry';
 
 @Injectable()
 export class ArtistsService {
@@ -15,6 +16,8 @@ export class ArtistsService {
     private readonly artistRepository: Repository<ArtistEntity>,
     @InjectRepository(TrackEntity)
     private readonly trackRepository: Repository<TrackEntity>,
+    @InjectRepository(AlbumEntity)
+    private readonly albumRepository: Repository<AlbumEntity>,
   ) {}
 
   findAll(): Promise<ArtistEntity[]> {
@@ -53,6 +56,16 @@ export class ArtistsService {
 
     await this.trackRepository.save(
       relatedTracks.map((track) => ({ ...track, artistId: null })),
+    );
+
+    const relatedAlbums = await this.albumRepository.find({
+      where: {
+        artistId: id,
+      },
+    });
+
+    await this.albumRepository.save(
+      relatedAlbums.map((album) => ({ ...album, artistId: null })),
     );
 
     return this.artistRepository.remove(artistToDelete);
