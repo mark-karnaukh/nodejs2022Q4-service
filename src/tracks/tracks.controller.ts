@@ -43,11 +43,11 @@ export class TracksController {
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
   ) {
-    const track = this.tracksService.findOne(id);
+    const track = await this.tracksService.findOne(id);
 
     if (!track) {
       throw new NotFoundException();
@@ -58,8 +58,8 @@ export class TracksController {
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    const track = this.tracksService.findOne(id);
+  async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    const track = await this.tracksService.findOne(id);
 
     if (!track) {
       throw new NotFoundException();
