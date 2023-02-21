@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   ForbiddenException,
@@ -10,6 +11,7 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -18,42 +20,38 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UsersService } from './users.service';
 
 @ApiTags('Users')
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
   findAll() {
-    // TODO: Use interceptor and class-transformer library to exclude this field from the response object
-    return this.usersService
-      .findAll()
-      .map((user) => ({ ...user, password: undefined }));
+    return this.usersService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    const user = this.usersService.findOne(id);
+  async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    const user = await this.usersService.findOne(id);
 
     if (!user) {
       throw new NotFoundException();
     }
 
-    // TODO: Use interceptor and  class-transformer library to exclude this field from the response object
-    return { ...user, password: undefined };
+    return user;
   }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    // TODO: Use interceptor and  class-transformer library to exclude this field from the response object
-    return { ...this.usersService.create(createUserDto), password: undefined };
+    return this.usersService.create(createUserDto);
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
-    const user = this.usersService.findOne(id);
+    const user = await this.usersService.findOne(id);
 
     if (!user) {
       throw new NotFoundException();
@@ -63,23 +61,21 @@ export class UsersController {
       throw new ForbiddenException();
     }
 
-    // TODO: Use interceptor and class-transformer library to exclude this field from the response object
     return {
-      ...this.usersService.update(id, updatePasswordDto),
+      ...(await this.usersService.update(id, updatePasswordDto)),
       password: undefined,
     };
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    const user = this.usersService.findOne(id);
+  async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    const user = await this.usersService.findOne(id);
 
     if (!user) {
       throw new NotFoundException();
     }
 
-    // TODO: Use interceptor and class-transformer library to exclude this field from the response object
-    return { ...this.usersService.remove(id), password: undefined };
+    return this.usersService.remove(id);
   }
 }
