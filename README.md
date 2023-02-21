@@ -48,14 +48,14 @@ docker-compose up -d --build -V
 - `-V`: Forces a fresh install of the dependencies in the container (required in case if the new npm packages were installed)
 - `--build`: Rebuilds the images (required in case if the Dockerfile was tweaked)
 
-## Build production-otimized image
+## Build production-optimized image
 
 ```bash
 docker build -t nest-home-library .
 
 ```
 
-Check the size of the immage (should be less than 500MB):
+Check the size of the image (should be less than 500MB):
 
 ```bash
 docker images
