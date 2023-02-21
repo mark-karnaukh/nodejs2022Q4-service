@@ -25,7 +25,6 @@ Here's how to setup locally.
 2. Run `npm install` to install dependencies
 3. Look at the `.env.example` file and create your own `.env` file following the same content structure (variables)
 4. Run `docker-compose up -d` to setup local environment with Docker
-5. Run `npx prisma migrate dev` to run local database migrations
 
 This setup will handle hot reloading, so any updates you make to the NestJS code will update the container in realtime. 
 
