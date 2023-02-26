@@ -15,6 +15,8 @@ export class AlbumEntity {
   @Column()
   year: number;
 
-  @ManyToOne(() => FavoritesEntity, (favorites) => favorites.artists)
+  @ManyToOne(() => FavoritesEntity, (favorites) => favorites.artists, {
+    onDelete: 'SET NULL',
+  })
   favorites: FavoritesEntity;
 }

@@ -12,6 +12,8 @@ export class ArtistEntity {
   @Column()
   grammy: boolean;
 
-  @ManyToOne(() => FavoritesEntity, (favorites) => favorites.artists)
+  @ManyToOne(() => FavoritesEntity, (favorites) => favorites.artists, {
+    onDelete: 'SET NULL',
+  })
   favorites: FavoritesEntity;
 }

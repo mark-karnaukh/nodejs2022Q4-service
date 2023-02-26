@@ -66,4 +66,8 @@ export class UsersService {
 
     return user.password === updatePasswordDto.oldPassword;
   }
+
+  async isUserExist(id: string): Promise<boolean> {
+    return !!(await this.findOne(id));
+  }
 }
