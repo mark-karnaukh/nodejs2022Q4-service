@@ -1,80 +1,205 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { DBService } from 'src/db-mock';
-import { FavoritesRepsonse } from 'src/interfaces';
+import { AlbumEntity } from 'src/entities/album.entiry';
+import { ArtistEntity } from 'src/entities/artist.entity';
+import { FavoritesEntity } from 'src/entities/favs.entity';
+import { TrackEntity } from 'src/entities/track.entity';
+import { FavoritesResponse } from 'src/interfaces';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class FavsService {
-  getAll(): FavoritesRepsonse {
-    return {
-      albums: DBService.albums.filter((album) =>
-        DBService.favs.albums.includes(album.id),
-      ),
-      artists: DBService.artists.filter((artist) =>
-        DBService.favs.artists.includes(artist.id),
-      ),
-      tracks: DBService.tracks.filter((track) =>
-        DBService.favs.tracks.includes(track.id),
-      ),
-    };
+  favoritesInstance: FavoritesEntity;
+
+  constructor(
+    @InjectRepository(ArtistEntity)
+    private readonly artistRepository: Repository<ArtistEntity>,
+    @InjectRepository(TrackEntity)
+    private readonly trackRepository: Repository<TrackEntity>,
+    @InjectRepository(AlbumEntity)
+    private readonly albumRepository: Repository<AlbumEntity>,
+    @InjectRepository(FavoritesEntity)
+    private readonly favoritesRepository: Repository<FavoritesEntity>,
+  ) {}
+
+  async onModuleInit() {
+    const favorites = await this.favoritesRepository.find();
+
+    if (!favorites.length) {
+      this.favoritesInstance = this.favoritesRepository.create();
+
+      return await this.favoritesRepository.save(this.favoritesInstance);
+    }
+
+    this.favoritesInstance = favorites[0];
   }
 
-  addTrack(id: string) {
-    return DBService.favs.tracks.push(id);
+  async getAll(): Promise<FavoritesResponse> {
+    return (
+      await this.favoritesRepository.find({
+        relations: {
+          artists: true,
+          albums: true,
+          tracks: true,
+        },
+      })
+    )[0];
   }
 
-  isTrackExist(id: string): boolean {
-    return DBService.tracks.some((track) => track.id === id);
+  async addTrack(id: string) {
+    const trackToAdd = await this.trackRepository.findOneBy({ id });
+
+    const favorites = (
+      await this.favoritesRepository.find({
+        relations: {
+          artists: true,
+          albums: true,
+          tracks: true,
+        },
+      })
+    )[0];
+
+    favorites.tracks.push(trackToAdd);
+
+    return this.favoritesRepository.save(favorites);
   }
 
-  isTrackInFavs(id: string): boolean {
-    return DBService.favs.tracks.some((trackId) => trackId === id);
+  async isTrackExist(id: string): Promise<boolean> {
+    return !!(await this.trackRepository.findOneBy({ id }));
   }
 
-  removeTrack(id: string) {
-    const trackIndex = DBService.favs.tracks.indexOf(
-      DBService.favs.tracks.find((trackId) => trackId === id),
-    );
+  async isTrackInFavs(id: string): Promise<boolean> {
+    const favorites = (
+      await this.favoritesRepository.find({
+        relations: {
+          artists: true,
+          albums: true,
+          tracks: true,
+        },
+      })
+    )[0];
 
-    return DBService.favs.tracks.splice(trackIndex, 1);
+    return !!favorites.tracks.find((track) => track.id === id);
   }
 
-  addAlbum(id: string) {
-    return DBService.favs.albums.push(id);
+  async removeTrack(id: string) {
+    const favorites = (
+      await this.favoritesRepository.find({
+        relations: {
+          artists: true,
+          albums: true,
+          tracks: true,
+        },
+      })
+    )[0];
+
+    favorites.tracks = favorites.tracks.filter((track) => track.id !== id);
+
+    return this.favoritesRepository.save(favorites);
   }
 
-  isAlbumExist(id: string): boolean {
-    return DBService.albums.some((album) => album.id === id);
+  async addAlbum(id: string) {
+    const albumToAdd = await this.albumRepository.findOneBy({ id });
+
+    const favorites = (
+      await this.favoritesRepository.find({
+        relations: {
+          artists: true,
+          albums: true,
+          tracks: true,
+        },
+      })
+    )[0];
+
+    favorites.albums.push(albumToAdd);
+
+    return this.favoritesRepository.save(favorites);
   }
 
-  isAlbumInFavs(id: string): boolean {
-    return DBService.favs.albums.some((albumId) => albumId === id);
+  async isAlbumExist(id: string): Promise<boolean> {
+    return !!(await this.albumRepository.findOneBy({ id }));
   }
 
-  removeAlbum(id: string) {
-    const albumIndex = DBService.favs.albums.indexOf(
-      DBService.favs.albums.find((albumId) => albumId === id),
-    );
+  async isAlbumInFavs(id: string): Promise<boolean> {
+    const favorites = (
+      await this.favoritesRepository.find({
+        relations: {
+          artists: true,
+          albums: true,
+          tracks: true,
+        },
+      })
+    )[0];
 
-    return DBService.favs.albums.splice(albumIndex, 1);
+    return !!favorites.albums.find((album) => album.id === id);
   }
 
-  addArtist(id: string) {
-    return DBService.favs.artists.push(id);
+  async removeAlbum(id: string) {
+    const favorites = (
+      await this.favoritesRepository.find({
+        relations: {
+          artists: true,
+          albums: true,
+          tracks: true,
+        },
+      })
+    )[0];
+
+    favorites.albums = favorites.albums.filter((album) => album.id !== id);
+
+    return this.favoritesRepository.save(favorites);
   }
 
-  isArtistExist(id: string): boolean {
-    return !!DBService.artists.find((artists) => artists.id === id);
+  async addArtist(id: string) {
+    const artistToAdd = await this.artistRepository.findOneBy({ id });
+
+    const favorites = (
+      await this.favoritesRepository.find({
+        relations: {
+          artists: true,
+          albums: true,
+          tracks: true,
+        },
+      })
+    )[0];
+
+    favorites.artists.push(artistToAdd);
+
+    return this.favoritesRepository.save(favorites);
   }
 
-  isArtistInFavs(id: string): boolean {
-    return DBService.favs.artists.some((artistId) => artistId === id);
+  async isArtistExist(id: string): Promise<boolean> {
+    return !!(await this.artistRepository.findOneBy({ id }));
   }
 
-  removeArtist(id: string) {
-    const artistIndex = DBService.favs.artists.indexOf(
-      DBService.favs.artists.find((artistId) => artistId === id),
-    );
+  async isArtistInFavs(id: string): Promise<boolean> {
+    const favorites = (
+      await this.favoritesRepository.find({
+        relations: {
+          artists: true,
+          albums: true,
+          tracks: true,
+        },
+      })
+    )[0];
 
-    return DBService.favs.artists.splice(artistIndex, 1);
+    return !!favorites.artists.find((artist) => artist.id === id);
+  }
+
+  async removeArtist(id: string) {
+    const favorites = (
+      await this.favoritesRepository.find({
+        relations: {
+          artists: true,
+          albums: true,
+          tracks: true,
+        },
+      })
+    )[0];
+
+    favorites.artists = favorites.artists.filter((artist) => artist.id !== id);
+
+    return this.favoritesRepository.save(favorites);
   }
 }

@@ -57,4 +57,13 @@ export class UsersService {
 
     return userToDelete;
   }
+
+  async isPasswordMatch(
+    id: string,
+    updatePasswordDto: UpdatePasswordDto,
+  ): Promise<boolean> {
+    const user = await this.userRepository.findOneBy({ id });
+
+    return user.password === updatePasswordDto.oldPassword;
+  }
 }

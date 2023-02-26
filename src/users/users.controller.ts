@@ -57,7 +57,12 @@ export class UsersController {
       throw new NotFoundException();
     }
 
-    if (!(user.password === updatePasswordDto.oldPassword)) {
+    const isPasswordMatch = await this.usersService.isPasswordMatch(
+      id,
+      updatePasswordDto,
+    );
+
+    if (!isPasswordMatch) {
       throw new ForbiddenException();
     }
 

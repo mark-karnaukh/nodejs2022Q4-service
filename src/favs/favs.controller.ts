@@ -24,8 +24,10 @@ export class FavsController {
   }
 
   @Post('/track/:id')
-  addTrack(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    if (!this.favsService.isTrackExist(id)) {
+  async addTrack(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    const isTrackExist = await this.favsService.isTrackExist(id);
+
+    if (!isTrackExist) {
       throw new UnprocessableEntityException();
     }
 
@@ -34,8 +36,12 @@ export class FavsController {
 
   @Delete('/track/:id')
   @HttpCode(204)
-  removeTrack(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    if (!this.favsService.isTrackInFavs(id)) {
+  async removeTrack(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ) {
+    const isTrackInFavs = await this.favsService.isTrackInFavs(id);
+
+    if (!isTrackInFavs) {
       throw new BadRequestException();
     }
 
@@ -43,8 +49,10 @@ export class FavsController {
   }
 
   @Post('/album/:id')
-  addAlbum(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    if (!this.favsService.isAlbumExist(id)) {
+  async addAlbum(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    const isAlbumExist = await this.favsService.isAlbumExist(id);
+
+    if (!isAlbumExist) {
       throw new UnprocessableEntityException();
     }
 
@@ -53,8 +61,12 @@ export class FavsController {
 
   @Delete('/album/:id')
   @HttpCode(204)
-  removeAlbum(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    if (!this.favsService.isAlbumInFavs(id)) {
+  async removeAlbum(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ) {
+    const isAlbumInFavs = await this.favsService.isAlbumInFavs(id);
+
+    if (!isAlbumInFavs) {
       throw new BadRequestException();
     }
 
@@ -62,8 +74,12 @@ export class FavsController {
   }
 
   @Post('/artist/:id')
-  addArtist(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    if (!this.favsService.isArtistExist(id)) {
+  async addArtist(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ) {
+    const isArtistExist = await this.favsService.isArtistExist(id);
+
+    if (!isArtistExist) {
       throw new UnprocessableEntityException();
     }
 
@@ -72,8 +88,12 @@ export class FavsController {
 
   @Delete('/artist/:id')
   @HttpCode(204)
-  removeArtist(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    if (!this.favsService.isArtistInFavs(id)) {
+  async removeArtist(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ) {
+    const isArtistInFavs = await this.favsService.isArtistInFavs(id);
+
+    if (!isArtistInFavs) {
       throw new BadRequestException();
     }
 
