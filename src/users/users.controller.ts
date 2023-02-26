@@ -61,10 +61,7 @@ export class UsersController {
       throw new ForbiddenException();
     }
 
-    return {
-      ...(await this.usersService.update(id, updatePasswordDto)),
-      password: undefined,
-    };
+    return await this.usersService.update(id, updatePasswordDto);
   }
 
   @Delete(':id')

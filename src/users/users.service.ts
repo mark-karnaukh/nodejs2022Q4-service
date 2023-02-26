@@ -38,19 +38,23 @@ export class UsersService {
   ): Promise<UserEntity> {
     const userToUpdate = await this.userRepository.findOneBy({ id });
 
-    return await this.userRepository.save({
-      ...userToUpdate,
-      id,
-      version: userToUpdate.version + 1,
-      createdAt: Number(userToUpdate.createdAt),
-      updatedAt: new Date().valueOf(),
-      password: updatePasswordDto.newPassword,
-    });
+    await this.userRepository.update(
+      { id },
+      {
+        version: userToUpdate.version + 1,
+        updatedAt: new Date().valueOf(),
+        password: updatePasswordDto.newPassword,
+      },
+    );
+
+    return await this.userRepository.findOneBy({ id });
   }
 
   async remove(id: string): Promise<UserEntity> {
     const userToDelete = await this.userRepository.findOneBy({ id });
 
-    return this.userRepository.remove(userToDelete);
+    await this.userRepository.delete({ id });
+
+    return userToDelete;
   }
 }
