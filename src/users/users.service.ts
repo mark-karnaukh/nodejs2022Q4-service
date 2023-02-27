@@ -21,6 +21,10 @@ export class UsersService {
     return this.userRepository.findOneBy({ id });
   }
 
+  findByLogin(login: string): Promise<UserEntity> {
+    return this.userRepository.findOneBy({ login });
+  }
+
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     const newUser = this.userRepository.create({
       ...createUserDto,
@@ -38,19 +42,36 @@ export class UsersService {
   ): Promise<UserEntity> {
     const userToUpdate = await this.userRepository.findOneBy({ id });
 
-    return await this.userRepository.save({
-      ...userToUpdate,
-      id,
-      version: userToUpdate.version + 1,
-      createdAt: Number(userToUpdate.createdAt),
-      updatedAt: new Date().valueOf(),
-      password: updatePasswordDto.newPassword,
-    });
+    await this.userRepository.update(
+      { id },
+      {
+        version: userToUpdate.version + 1,
+        updatedAt: new Date().valueOf(),
+        password: updatePasswordDto.newPassword,
+      },
+    );
+
+    return await this.userRepository.findOneBy({ id });
   }
 
   async remove(id: string): Promise<UserEntity> {
     const userToDelete = await this.userRepository.findOneBy({ id });
 
-    return this.userRepository.remove(userToDelete);
+    await this.userRepository.delete({ id });
+
+    return userToDelete;
+  }
+
+  async isPasswordMatch(
+    id: string,
+    updatePasswordDto: UpdatePasswordDto,
+  ): Promise<boolean> {
+    const user = await this.userRepository.findOneBy({ id });
+
+    return user.password === updatePasswordDto.oldPassword;
+  }
+
+  async isUserExist(id: string): Promise<boolean> {
+    return !!(await this.findOne(id));
   }
 }

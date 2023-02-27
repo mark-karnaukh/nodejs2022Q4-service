@@ -25,9 +25,7 @@ export class AlbumsService {
   }
 
   async create(createAlbumDto: CreateAlbumDto): Promise<AlbumEntity> {
-    const newAlbum = this.albumRepository.create({
-      ...createAlbumDto,
-    });
+    const newAlbum = this.albumRepository.create(createAlbumDto);
 
     return await this.albumRepository.save(newAlbum);
   }
@@ -36,12 +34,9 @@ export class AlbumsService {
     id: string,
     updateAlbumDto: UpdateAlbumDto,
   ): Promise<AlbumEntity> {
-    const albumToUpdate = await this.albumRepository.findOneBy({ id });
+    await this.albumRepository.update({ id }, updateAlbumDto);
 
-    return await this.albumRepository.save({
-      ...albumToUpdate,
-      ...updateAlbumDto,
-    });
+    return await this.albumRepository.findOneBy({ id });
   }
 
   async remove(id: string): Promise<AlbumEntity> {
@@ -57,6 +52,8 @@ export class AlbumsService {
       relatedTracks.map((track) => ({ ...track, albumId: null })),
     );
 
-    return this.albumRepository.remove(albumToDelete);
+    await this.albumRepository.delete({ id });
+
+    return albumToDelete;
   }
 }

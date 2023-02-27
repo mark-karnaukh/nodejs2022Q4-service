@@ -22,9 +22,7 @@ export class TracksService {
   }
 
   async create(createTrackDto: CreateTrackDto): Promise<TrackEntity> {
-    const newTrack = this.trackRepository.create({
-      ...createTrackDto,
-    });
+    const newTrack = this.trackRepository.create(createTrackDto);
 
     return await this.trackRepository.save(newTrack);
   }
@@ -33,17 +31,16 @@ export class TracksService {
     id: string,
     updateTrackDto: UpdateTrackDto,
   ): Promise<TrackEntity> {
-    const trackToUpdate = await this.trackRepository.findOneBy({ id });
+    await this.trackRepository.update({ id }, updateTrackDto);
 
-    return await this.trackRepository.save({
-      ...trackToUpdate,
-      ...updateTrackDto,
-    });
+    return await this.trackRepository.findOneBy({ id });
   }
 
   async remove(id: string): Promise<TrackEntity> {
     const trackToDelete = await this.trackRepository.findOneBy({ id });
 
-    return this.trackRepository.remove(trackToDelete);
+    await this.trackRepository.delete({ id });
+
+    return trackToDelete;
   }
 }
