@@ -23,4 +23,8 @@ export class UserEntity {
   @Column('bigint')
   @Transform(({ value }) => Number(value))
   updatedAt: number;
+
+  @Column({ nullable: true })
+  @Exclude()
+  refreshToken?: string;
 }
