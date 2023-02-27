@@ -15,12 +15,12 @@ export class CreateTrackDto {
   name: string;
 
   @ApiProperty()
-  @IsUUID()
+  @IsUUID('4')
   @IsOptional()
   artistId: string | null;
 
   @ApiProperty()
-  @IsUUID()
+  @IsUUID('4')
   @IsOptional()
   albumId: string | null;
 

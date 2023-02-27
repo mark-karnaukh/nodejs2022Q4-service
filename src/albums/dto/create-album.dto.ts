@@ -20,7 +20,7 @@ export class CreateAlbumDto {
   year: number;
 
   @ApiProperty()
-  @IsUUID()
+  @IsUUID('4')
   @IsOptional()
   artistId: string | null;
 }
