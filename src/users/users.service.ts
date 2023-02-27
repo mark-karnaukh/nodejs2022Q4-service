@@ -21,6 +21,10 @@ export class UsersService {
     return this.userRepository.findOneBy({ id });
   }
 
+  findByLogin(login: string): Promise<UserEntity> {
+    return this.userRepository.findOneBy({ login });
+  }
+
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     const newUser = this.userRepository.create({
       ...createUserDto,

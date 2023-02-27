@@ -19,7 +19,7 @@ import { AuthModule } from './auth/auth.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     UsersModule,
     TracksModule,
     ArtistsModule,
