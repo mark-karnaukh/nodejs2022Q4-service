@@ -57,6 +57,7 @@ docker build -t nest-home-library .
 
 Check the size of the image (should be less than 500MB):
 
+
 ```bash
 docker images
 

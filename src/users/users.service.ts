@@ -1,53 +1,56 @@
 import { Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
-import { DBService } from 'src/db-mock';
-import { User } from 'src/interfaces';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { UserEntity } from 'src/entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  findAll(): User[] {
-    return DBService.users;
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+  ) {}
+
+  findAll(): Promise<UserEntity[]> {
+    return this.userRepository.find();
   }
 
-  findOne(id: string): User {
-    const user = DBService.users.find((user) => user.id === id);
-
-    return user;
+  findOne(id: string): Promise<UserEntity> {
+    return this.userRepository.findOneBy({ id });
   }
 
-  create(createUserDto: CreateUserDto): User {
-    const idx = DBService.users.push({
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+    const newUser = this.userRepository.create({
       ...createUserDto,
-      id: uuidv4(),
       updatedAt: new Date().valueOf(),
       createdAt: new Date().valueOf(),
       version: 1,
     });
 
-    return DBService.users[idx - 1];
+    return await this.userRepository.save(newUser);
   }
 
-  update(id: string, updatePasswordDto: UpdatePasswordDto): User {
-    const userToUpdate = DBService.users.find((artist) => artist.id == id);
-    const userIdx = DBService.users.indexOf(userToUpdate);
+  async update(
+    id: string,
+    updatePasswordDto: UpdatePasswordDto,
+  ): Promise<UserEntity> {
+    const userToUpdate = await this.userRepository.findOneBy({ id });
 
-    DBService.users[userIdx] = {
+    return await this.userRepository.save({
       ...userToUpdate,
+      id,
       version: userToUpdate.version + 1,
+      createdAt: Number(userToUpdate.createdAt),
       updatedAt: new Date().valueOf(),
       password: updatePasswordDto.newPassword,
-    };
-
-    return DBService.users[userIdx];
+    });
   }
 
-  remove(id: string): User {
-    const userToDelete = DBService.users.find((album) => album.id == id);
-    const userIdx = DBService.users.indexOf(userToDelete);
+  async remove(id: string): Promise<UserEntity> {
+    const userToDelete = await this.userRepository.findOneBy({ id });
 
-    return DBService.users.splice(userIdx, 1)[0];
+    return this.userRepository.remove(userToDelete);
   }
 }
