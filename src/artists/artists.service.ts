@@ -29,20 +29,15 @@ export class ArtistsService {
   }
 
   async create(createArtistDto: CreateArtistDto): Promise<ArtistEntity> {
-    const newArtist = this.artistRepository.create({
-      ...createArtistDto,
-    });
+    const newArtist = this.artistRepository.create(createArtistDto);
 
     return await this.artistRepository.save(newArtist);
   }
 
   async update(id: string, updateArtistDto: UpdateArtistDto): Promise<Artist> {
-    const artistToUpdate = await this.artistRepository.findOneBy({ id });
+    await this.artistRepository.update({ id }, updateArtistDto);
 
-    return await this.artistRepository.save({
-      ...artistToUpdate,
-      ...updateArtistDto,
-    });
+    return await this.artistRepository.findOneBy({ id });
   }
 
   async remove(id: string): Promise<ArtistEntity> {
@@ -68,6 +63,8 @@ export class ArtistsService {
       relatedAlbums.map((album) => ({ ...album, artistId: null })),
     );
 
-    return this.artistRepository.remove(artistToDelete);
+    await this.artistRepository.delete({ id });
+
+    return artistToDelete;
   }
 }

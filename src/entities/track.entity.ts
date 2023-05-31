@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { FavoritesEntity } from './favs.entity';
 
 @Entity()
 export class TrackEntity {
@@ -16,4 +17,9 @@ export class TrackEntity {
 
   @Column()
   duration: number;
+
+  @ManyToOne(() => FavoritesEntity, (favorites) => favorites.artists, {
+    onDelete: 'SET NULL',
+  })
+  favorites: FavoritesEntity;
 }

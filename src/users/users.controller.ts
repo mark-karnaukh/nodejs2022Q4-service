@@ -51,28 +51,30 @@ export class UsersController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
-    const user = await this.usersService.findOne(id);
+    const isUserExist = await this.usersService.isUserExist(id);
 
-    if (!user) {
+    if (!isUserExist) {
       throw new NotFoundException();
     }
 
-    if (!(user.password === updatePasswordDto.oldPassword)) {
+    const isPasswordMatch = await this.usersService.isPasswordMatch(
+      id,
+      updatePasswordDto,
+    );
+
+    if (!isPasswordMatch) {
       throw new ForbiddenException();
     }
 
-    return {
-      ...(await this.usersService.update(id, updatePasswordDto)),
-      password: undefined,
-    };
+    return await this.usersService.update(id, updatePasswordDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
   async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    const user = await this.usersService.findOne(id);
+    const isUserExist = await this.usersService.isUserExist(id);
 
-    if (!user) {
+    if (!isUserExist) {
       throw new NotFoundException();
     }
 

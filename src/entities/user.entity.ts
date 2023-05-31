@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Exclude } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 
 @Entity()
 export class UserEntity {
@@ -17,8 +17,14 @@ export class UserEntity {
   version: number;
 
   @Column('bigint')
+  @Transform(({ value }) => Number(value))
   createdAt: number;
 
   @Column('bigint')
+  @Transform(({ value }) => Number(value))
   updatedAt: number;
+
+  @Column({ nullable: true })
+  @Exclude()
+  refreshToken?: string;
 }
